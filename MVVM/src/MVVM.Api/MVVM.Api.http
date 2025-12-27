@@ -1,0 +1,15 @@
+@MVVM.Api_HostAddress = http://localhost:5101
+
+GET {{MVVM.Api_HostAddress}}/api/todos
+Accept: application/json
+
+###
+
+POST {{MVVM.Api_HostAddress}}/api/todos
+Content-Type: application/json
+
+{
+  "title": "New item from http file"
+}
+
+###

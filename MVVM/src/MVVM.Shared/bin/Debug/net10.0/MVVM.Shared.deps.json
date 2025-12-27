@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "MVVM.Shared/1.0.0": {
+        "runtime": {
+          "MVVM.Shared.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MVVM.Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

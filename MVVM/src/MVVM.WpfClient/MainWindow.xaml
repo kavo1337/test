@@ -1,0 +1,185 @@
+<Window x:Class="MVVM.WpfClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVM.WpfClient"
+        mc:Ignorable="d"
+        Title="Учебный список задач"
+        Height="650"
+        Width="980"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource AppBackground}"
+        FontFamily="Segoe UI">
+    <Window.Resources>
+        <SolidColorBrush x:Key="AppBackground" Color="#F3F4F6" />
+        <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#2F6FED" />
+        <SolidColorBrush x:Key="DangerBrush" Color="#DC2626" />
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#6B7280" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="MinWidth" Value="110" />
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}" />
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Background" Value="#E5E7EB" />
+            <Setter Property="Foreground" Value="#1F2937" />
+        </Style>
+        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource DangerBrush}" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#D1D5DB" />
+            <Setter Property="Background" Value="White" />
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="Учебный список задач" FontSize="26" FontWeight="SemiBold" />
+            <TextBlock Text="WPF + Web API + SQL Server LocalDB"
+                       Foreground="{StaticResource MutedTextBrush}"
+                       Margin="0,4,0,0" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Background="{StaticResource CardBackground}" CornerRadius="10" Padding="16" Margin="0,16,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Новая задача" FontWeight="SemiBold" />
+                    <TextBox Width="420"
+                             Text="{Binding NewTitle, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Content="Добавить"
+                        Command="{Binding AddCommand}"
+                        Margin="16,20,0,0"
+                        VerticalAlignment="Center" />
+                <Button Grid.Column="2"
+                        Content="Обновить"
+                        Command="{Binding LoadCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="8,20,0,0"
+                        VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Background="{StaticResource CardBackground}" CornerRadius="10" Padding="16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Список задач" FontWeight="SemiBold" FontSize="16" />
+
+                <ListView Grid.Row="1" ItemsSource="{Binding Items}" Margin="0,12,0,0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#F9FAFB" Padding="10" Margin="0,0,0,8" CornerRadius="8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <CheckBox IsChecked="{Binding IsDone}"
+                                                  IsEnabled="False"
+                                                  Margin="0,0,8,0" />
+                                        <TextBlock Text="{Binding Title}"
+                                                   VerticalAlignment="Center"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Сменить статус"
+                                                Command="{Binding DataContext.ToggleCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                MinWidth="140" />
+                                        <Button Content="Удалить"
+                                                Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource DangerButtonStyle}"
+                                                Margin="8,0,0,0"
+                                                MinWidth="100" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,12,0,0">
+                    <TextBlock Text="{Binding TotalCount, StringFormat=Всего: {0}}" />
+                    <TextBlock Text="{Binding DoneCount, StringFormat=Выполнено: {0}}" Margin="16,0,0,0" />
+                    <TextBlock Text="{Binding RemainingCount, StringFormat=Осталось: {0}}" Margin="16,0,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="3" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+                <ProgressBar Width="120"
+                             Height="6"
+                             IsIndeterminate="True"
+                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+                <TextBlock Text="Загрузка..."
+                           Margin="8,0,0,0"
+                           Foreground="{StaticResource MutedTextBrush}"
+                           Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>
+
+            <TextBlock Grid.Column="1"
+                       Text="{Binding ErrorMessage}"
+                       Foreground="#B91C1C"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center" />
+        </Grid>
+    </Grid>
+</Window>
